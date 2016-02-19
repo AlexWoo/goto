@@ -17,7 +17,7 @@ Config file is installed under /etc/, name is goto.conf, config format
 - the second column is login command
 - the third column is remote server host
 - the forth column is remote server port
-- the fifth column is remote server login password. for safety, this column could ingore
+- the fifth column is remote server login password. for safety, this column could be ingored
 
 one line for each server
 
