@@ -1,0 +1,20 @@
+if [ "$USER" != "root" ];then
+    echo "should install with root"
+    exit 1
+fi
+
+bins=goto
+loginscripts=loginssh
+
+for bin in $bins
+do
+    cp $bin /usr/bin
+done
+
+cp goto.conf /etc/
+
+mkdir -p /etc/goto.conf.d
+for loginscript in $loginscripts
+do
+    cp $loginscript /etc/goto.conf.d
+done

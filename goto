@@ -1,0 +1,33 @@
+#!/bin/bash
+
+config=/etc/goto.conf
+hostname=$1
+loginssh=/etc/goto.conf.d/loginssh
+
+if [ $# != 1 ];then
+    echo "Usage: $0 hostname"
+    exit 1
+fi
+
+login_to_server()
+{
+    case $2 in
+        "ssh")
+           $loginssh $2 $3 $4 $5 $6
+        ;;
+        *)
+           echo "Usage: $cmd not support"
+           exit 3
+        ;;
+    esac
+}
+
+loginstr=`grep "^$hostname " $config | sed -n 1p`
+echo $loginstr
+if [ -z "$loginstr" ];then
+    echo "unknown $hostname in $config"
+    exit 2
+fi
+
+login_to_server $loginstr
+exit $?

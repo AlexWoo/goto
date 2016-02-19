@@ -1,0 +1,46 @@
+#!/usr/bin/expect
+
+if { [llength $argv] < 4} {
+    puts "Usage:"
+    puts "$argv0 local_file remote_path"
+    exit 1
+}
+
+set cmd [lindex $argv 0]
+set host [lindex $argv 1]
+set acc [lindex $argv 2]
+set port [lindex $argv 3]
+set passwd [lindex $argv 4]
+
+set passwderror 0
+set timeout 30
+spawn $cmd $acc@$host -p $port
+expect {
+    "*assword:*" {
+        if { $passwderror == 1 } {
+            puts "passwd is error"
+            exit 2
+        }
+        if { $passwd != ""} {
+            set timeout 1000
+            set passwderror 1
+            send "$passwd\r"
+        }
+        interact
+        exp_continue
+    }
+    "*es/no)?*" {
+        send "yes\r"
+        exp_continue
+    }
+    timeout {
+        puts "connect is timeout"
+        exit 3
+    }
+    "* " {
+        interact
+    }
+}
+
+interact
+
