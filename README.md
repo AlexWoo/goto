@@ -25,11 +25,20 @@ one line for each server
 
 This command should install with root, use install command as followed:
 
-	tar xzf goto.tar.gz
-	cd goto
-	./install
+- Linux
 
-- command will be installed under /usr/bin/
+		tar xzf goto.tar.gz
+		cd goto
+		./install
+
+- Mac OS
+
+		tar xzf goto.tar.gz
+		cd goto
+		chmod 755 ./install
+		sudo ./install
+
+- command will be installed under /usr/bin/ in Linux, under /usr/local/bin/ in Mac OS
 - config file will be installed under /etc/
 - login script will be installed under /etc/goto.conf.d/
 

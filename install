@@ -3,18 +3,89 @@ if [ "$USER" != "root" ];then
     exit 1
 fi
 
+getsysteminfo()
+{
+    tmp=`uname -s`
+    case $tmp in
+        "Darwin")
+            bindir=/usr/local/bin/
+            system=MacOS
+        ;;
+        "Linux")
+            bindir=/usr/bin/
+            system=Linux
+        ;;
+        *)
+            echo "Unsupport System"
+            echo $tmp
+            exit 2
+        ;;
+    esac
+}
+
+checkerror()
+{
+    if [ $? -ne 0 ]
+    then
+        echo "Error, Abort install goto"
+        exit 3
+    fi
+}
+
+installbin()
+{
+    for bin in $bins
+    do
+        cp $bin $bindir
+        checkerror
+        chmod 755 $bindir$bin
+        checkerror
+        echo "  Install $bin to $bindir successd"
+    done
+}
+
+installconf()
+{
+    tmp=`ls /etc/goto.conf`
+    if [ -z "$tmp" ]
+    then
+        cp goto.conf /etc/
+        checkerror
+        echo "  cp goto.conf /etc/ successd"
+    fi
+}
+
+installscripts()
+{
+    mkdir -p /etc/goto.conf.d
+    checkerror
+    for loginscript in $loginscripts
+    do
+        cp $loginscript /etc/goto.conf.d
+        checkerror
+        chmod 755 /etc/goto.conf.d/$loginscript
+        checkerror
+        echo "  Install $loginscript to /etc/goto.conf.d/ successd"
+    done
+}
+
 bins=goto
 loginscripts=loginssh
+getsysteminfo
+echo "Current system is $system"
+echo "Start install goto ..."
+echo ""
 
-for bin in $bins
-do
-    cp $bin /usr/bin
-done
+echo "Start install bins ..."
+installbin
+echo "Install bins successd"
+echo ""
 
-cp goto.conf /etc/
+echo "Start install conf ..."
+installconf
+echo "Install conf successd"
+echo ""
 
-mkdir -p /etc/goto.conf.d
-for loginscript in $loginscripts
-do
-    cp $loginscript /etc/goto.conf.d
-done
+echo "Start install scripts ..."
+installscripts
+echo "Install scripts successd"
