@@ -23,6 +23,11 @@ formatdir()
     else
         ret="$1"
     fi
+
+    tmp=`echo $ret | grep "/$"`
+    if [ -z "$tmp" ];then
+        ret="$ret/"
+    fi
 }
 
 checkdir()

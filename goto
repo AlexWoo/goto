@@ -16,14 +16,13 @@ login_to_server()
            $loginssh $2 $3 $4 $5 $6
         ;;
         *)
-           echo "Usage: $cmd not support"
+           echo "Usage: $2 not support"
            exit 3
         ;;
     esac
 }
 
 loginstr=`grep "^$hostname " $config | sed -n 1p`
-echo $loginstr
 if [ -z "$loginstr" ];then
     echo "unknown $hostname in $config"
     exit 2

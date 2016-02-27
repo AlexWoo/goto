@@ -1,3 +1,5 @@
+#! /bin/bash
+
 if [ "$USER" != "root" ];then
     echo "should install with root"
     exit 1
@@ -69,8 +71,9 @@ installscripts()
     done
 }
 
-bins=goto
-loginscripts=loginssh
+bins="goto gocd upload download"
+loginscripts="loginssh scpscript"
+
 getsysteminfo
 echo "Current system is $system"
 echo "Start install goto ..."
