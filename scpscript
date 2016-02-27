@@ -1,0 +1,65 @@
+#!/usr/bin/expect
+
+if {$argc == 3} {
+    set option ""
+    set port [lindex $argv 0]
+    set srcfile [lindex $argv 1]
+    set dstfile [lindex $argv 2]
+    set passwd ""
+} elseif {$argc == 4} {
+    if { [lindex $argv 0] == "-r"} {
+        set option "-r"
+        set port [lindex $argv 1]
+        set srcfile [lindex $argv 2]
+        set dstfile [lindex $argv 3]
+        set passwd ""
+    } else {
+        set option ""
+        set port [lindex $argv 0]
+        set srcfile [lindex $argv 1]
+        set dstfile [lindex $argv 2]
+        set passwd [lindex $argv 3]
+    }
+} elseif {$argc == 5} {
+    set option "-r"
+    set port [lindex $argv 1]
+    set srcfile [lindex $argv 2]
+    set dstfile [lindex $argv 3]
+    set passwd [lindex $argv 4]
+} else {
+    puts "Usage:"
+    puts "$argv0 [-r] port srcfile dstfile [passwd]"
+    exit 1
+}
+
+set passwderror 0
+set timeout 30
+if {$option == "-r"} {
+    spawn scp -r -P $port $srcfile $dstfile
+} else {
+    spawn scp -P $port $srcfile $dstfile
+}
+
+expect {
+    "*assword:*" {
+        if { $passwderror -ne 1 } {
+            puts "passwd is error"
+            exit 2
+        }
+        if { "$passwd" != ""} {
+            set timeout 1000
+            set passwderror 1
+            send "$passwd\r"
+        }
+        exp_continue
+    }
+    "*es/no)?*" {
+        send "yes\r"
+        exp_continue
+    }
+    timeout {
+        puts "connect is timeout"
+        exit 3
+    }
+}
+

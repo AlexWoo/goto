@@ -1,0 +1,112 @@
+#! /bin/bash
+
+usage()
+{
+    echo "Usage: $0 [-r] hostname remotefile [localfile]"
+}
+
+checkhost()
+{
+    tmp=`grep "^$1 " $config | sed -n 1p`
+    if [ -z "$tmp" ];then
+        echo "$1 not configured in /etc/goto.conf"
+        exit 2
+    fi
+}
+
+readgocdconf()
+{
+    tmp=`grep "^$hostname " $gocdconf | sed -n 1p`
+    if [ -z "$tmp" ];then
+        return
+    fi
+
+    arr=($tmp)
+    remotedir="${arr[2]}"
+}
+
+logininfo()
+{
+    loginstr=`grep "^$hostname " $config | sed -n 1p`    
+    arr=($loginstr)
+    cmd="${arr[1]}"
+    host="${arr[2]}"
+    user="${arr[3]}"
+    port="${arr[4]}"
+    passwd="${arr[5]}"
+}
+
+formatdir()
+{
+    tmp=`echo $localfile |grep "^[/~]"`
+    if [ -z "$tmp" ];then
+        localfile="$PWD/$localfile"
+    fi
+
+    tmp=`ls $localfile`
+    if [ $? -ne 0 ];then
+        echo "$localfile does not exist"
+        exit 3
+    fi
+
+    tmp=`echo $remotefile |grep "^[/~]"`
+    if [ -z "$tmp" ];then
+        if [ -z "$remotedir" ];then
+            remotefile="~/$remotefile"
+        else
+            remotefile="$remotedir$remotefile"
+        fi
+    fi
+    remotefile="$user@$host:$remotefile"
+}
+
+upload()
+{
+    case $cmd in
+        "ssh")
+            $scpscript $isdir $port $remotefile $localfile $passwd
+        ;;
+        *)
+           echo "Usage: $cmd not support"
+           exit 4
+        ;;
+    esac
+}
+
+config=/etc/goto.conf
+gocdconf=/etc/goto.conf.d/gocd.conf
+scpscript=/etc/goto.conf.d/scpscript
+
+if [ $# -eq 2 ];then
+    hostname=$1
+    remotefile=$2
+elif [ $# -eq 3 ];then
+    if [ $1 = "-r" ];then
+        isdir="-r"
+        hostname=$2
+        remotefile=$3
+    else
+        hostname=$1
+        localfile=$2
+        remotefile=$3
+    fi
+elif [ $# -eq 4 ];then
+    if [ $1 != "-r" ];then
+        usage
+        exit 1
+    fi
+    isdir="-r"
+    hostname=$2
+    localfile=$3
+    remotefile=$4
+else
+    usage
+    exit 1
+fi
+
+checkhost $hostname
+readgocdconf
+logininfo
+formatdir
+upload
+
