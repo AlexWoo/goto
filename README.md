@@ -23,10 +23,11 @@ one line for each server
 
 ## install
 
-This command should install with root, use install command as followed:
+Commands should be installed with root, use install command as followed:
 
 - Linux
 
+		yum install expect
 		tar xzf goto.tar.gz
 		cd goto
 		./install
@@ -38,7 +39,7 @@ This command should install with root, use install command as followed:
 		chmod 755 ./install
 		sudo ./install
 
-- command will be installed under /usr/bin/ in Linux, under /usr/local/bin/ in Mac OS
+- command will be installed under /usr/bin/ in Linux, under /usr/local/bin/ in MacOS
 - config file will be installed under /etc/
 - login script will be installed under /etc/goto.conf.d/
 
@@ -48,24 +49,45 @@ This command should install with root, use install command as followed:
 
 	Usage: goto hostname
 
+		login to remote server
+
+		- hostname: hostname is first column in config file
+
+- gocd
+
+	Usage: gocd hostname -l localdir
+	Usage: gocd hostname -r remotedir
+	Usage: gocd hostname -l localdir -r remotedir
+
+		set /etc/goto.conf.d/gocd.conf for upload and download
+
+		- -l: set localdir, now localdir not use in upload nor download
+		- -r: set remotedir, if remotefile in upload or download is not an absolute path, remotedir will set as default dir for remotefile, if remotedir does not set, ~/ will set as default dir for remotefile
+
+		if localdir or remotedir is not an absolute path, it will be set with ~/ as default
+
 - upload
 
 	Usage: upload [-r] hostname localfile [remotefile]
+	
+		upload file to remote server, if you don't set remotefile, upload will set filename same with local file name, and set remote location dir with remotedir config in /etc/goto.conf.d/gocd.conf or ~/
+
+		- hostname: hostname is first column in config file
+		- -r: if you upload or download a directory, you should add -r option
+		- localfile: local file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with pwd instead
+		- remotefile: remote file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with remotedir config in /etc/goto.conf.d/gocd.conf or with ~/ instead
 
 - download
 
 	Usage: download [-r] hostname remotefile [localfile]
+	
+		download file to remote server, if you don't set localfile, download will set filename same with remote file name, and set local location dir with pwd
 
-parameter instruction
+		- hostname: hostname is first column in config file
+		- -r: if you upload or download a directory, you should add -r option
+		- localfile: local file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with pwd instead
+		- remotefile: remote file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with remotedir config in /etc/goto.conf.d/gocd.conf or with ~/ instead
 
-- hostname: hostname is first column in config file
-- -r: if you upload or download a directory, you should add -r option
-- localfile: local file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with pwd instead
-- remotefile: remote file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with ~/ instead
-
-In upload, if you don't set remotefile, upload will set filename same with local file name, and set remote location dir with ~/
-
-In download, if you don't set localfile, download will set filename same with remote file name, and set local location dir with pwd
 
 ## TODO
 
