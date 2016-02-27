@@ -48,14 +48,25 @@ This command should install with root, use install command as followed:
 
 	Usage: goto hostname
 
-hostname is first column in config file
-
-## TODO
-
 - upload
 
-	upload file to remote server
+	Usage: upload [-r] hostname localfile [remotefile]
 
 - download
 
-	download file from remote server
+	Usage: download [-r] hostname remotefile [localfile]
+
+parameter instruction
+
+- hostname: hostname is first column in config file
+- -r: if you upload or download a directory, you should add -r option
+- localfile: local file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with pwd instead
+- remotefile: remote file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with ~/ instead
+
+In upload, if you don't set remotefile, upload will set filename same with local file name, and set remote location dir with ~/
+
+In download, if you don't set localfile, download will set filename same with remote file name, and set local location dir with pwd
+
+## TODO
+
+download cover protection
