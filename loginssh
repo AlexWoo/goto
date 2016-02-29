@@ -17,7 +17,7 @@ set timeout 30
 spawn $cmd $acc@$host -p $port
 expect {
     "*assword:*" {
-        if { $passwderror -ne 1 } {
+        if { $passwderror == 1 } {
             puts "passwd is error"
             exit 2
         }
@@ -37,7 +37,10 @@ expect {
         puts "connect is timeout"
         exit 3
     }
-    "* " {
+    "# " {
+        interact
+    }
+    "$ " {
         interact
     }
 }
