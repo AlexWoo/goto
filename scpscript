@@ -42,7 +42,7 @@ if {$option == "-r"} {
 
 expect {
     "*assword:*" {
-        if { $passwderror -ne 1 } {
+        if { $passwderror == 1 } {
             puts "passwd is error"
             exit 2
         }
@@ -50,6 +50,8 @@ expect {
             set timeout 1000
             set passwderror 1
             send "$passwd\r"
+        } else {
+            interact
         }
         exp_continue
     }
