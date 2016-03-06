@@ -27,7 +27,7 @@ readgocdconf()
 
 logininfo()
 {
-    loginstr=`grep "^$hostname " $config | sed -n 1p`    
+    loginstr=`grep "^$hostname " $config | sed -n 1p`
     arr=($loginstr)
     cmd="${arr[1]}"
     host="${arr[2]}"
@@ -45,7 +45,7 @@ userdecide()
             echo ""
             return 1
         elif [ -z $decision ];then
-            return 1
+            echo "Wrong input"
         elif [ $decision = "Y" -o $decision = "y" ];then
             return 0
         elif [ $decision = "N" -o $decision = "n" ];then
