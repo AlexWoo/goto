@@ -87,7 +87,3 @@ Commands should be installed with root, use install command as followed:
 		- localfile: local file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with pwd instead
 		- remotefile: remote file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with remotedir config in /etc/goto.conf.d/gocd.conf or with ~/ instead
 
-
-## TODO
-
-download cover protection

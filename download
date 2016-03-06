@@ -36,17 +36,62 @@ logininfo()
     passwd="${arr[5]}"
 }
 
+userdecide()
+{
+    while [ 1 ]
+    do
+        read -t 10 -p "$1 exist, do you wan't to cover it [Y/N]?" decision
+        if [ $? -ne 0 ];then
+            echo ""
+            return 1
+        elif [ -z $decision ];then
+            return 1
+        elif [ $decision = "Y" -o $decision = "y" ];then
+            return 0
+        elif [ $decision = "N" -o $decision = "n" ];then
+            return 1
+        else
+            echo "Wrong input"
+        fi
+    done
+}
+
+checklocalfile()
+{
+    if [ ! -e $localfile ];then
+        return
+    fi
+
+    if [ -d $localfile ];then
+        tmp=`echo $remotefile |grep "/$"`
+        if [ -n "$tmp" ];then
+            isdir="-r"
+            remotefile=`echo $remotefile | sed 's/.$//'`
+        fi
+        echo $remotefile
+        filename=`echo $remotefile | awk -F"/" '{print $NF}'`
+        if [ -e "$localfile/$filename" ];then
+            userdecide "$localfile/$filename"
+            if [ $? -ne 0 ];then
+                exit 0
+            fi
+        fi
+        return
+    fi
+
+    if [ -f $localfile ];then
+        userdecide $localfile
+        if [ $? -ne 0 ];then
+            exit 0
+        fi
+    fi
+}
+
 formatdir()
 {
     tmp=`echo $localfile |grep "^[/~]"`
     if [ -z "$tmp" ];then
         localfile="$PWD/$localfile"
-    fi
-
-    tmp=`ls $localfile`
-    if [ $? -ne 0 ];then
-        echo "$localfile does not exist"
-        exit 3
     fi
 
     tmp=`echo $remotefile |grep "^[/~]"`
@@ -57,13 +102,17 @@ formatdir()
             remotefile="$remotedir$remotefile"
         fi
     fi
+
+    checklocalfile
+
     remotefile="$user@$host:$remotefile"
 }
 
-upload()
+download()
 {
     case $cmd in
         "ssh")
+            echo "$scpscript $isdir $port $remotefile $localfile $passwd"
             $scpscript $isdir $port $remotefile $localfile $passwd
         ;;
         *)
@@ -108,5 +157,5 @@ checkhost $hostname
 readgocdconf
 logininfo
 formatdir
-upload
+download
 
