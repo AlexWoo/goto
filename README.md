@@ -68,12 +68,11 @@ Commands should be installed with root, use install command as followed:
 
 - upload
 
-	Usage: upload [-r] hostname localfile [remotefile]
+	Usage: upload hostname localfile [remotefile]
 	
 		upload file to remote server, if you don't set remotefile, upload will set filename same with local file name, and set remote location dir with remotedir config in /etc/goto.conf.d/gocd.conf or ~/
 
 		- hostname: hostname is first column in config file
-		- -r: if you upload or download a directory, you should add -r option
 		- localfile: local file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with pwd instead
 		- remotefile: remote file name, you can use absolute path like /root/aa, otherwise, command will set file location dir with remotedir config in /etc/goto.conf.d/gocd.conf or with ~/ instead
 

@@ -49,6 +49,10 @@ formatdir()
         exit 3
     fi
 
+    if [ -d "$localfile" ];then
+        isdir="-r"
+    fi
+
     tmp=`echo $remotefile |grep "^[/~]"`
     if [ -z "$tmp" ];then
         if [ -z "$remotedir" ];then
@@ -81,24 +85,9 @@ if [ $# -eq 2 ];then
     hostname=$1
     localfile=$2
 elif [ $# -eq 3 ];then
-    if [ $1 = "-r" ];then
-        isdir="-r"
-        hostname=$2
-        localfile=$3
-    else
-        hostname=$1
-        localfile=$2
-        remotefile=$3
-    fi
-elif [ $# -eq 4 ];then
-    if [ $1 != "-r" ];then
-        usage
-        exit 1
-    fi
-    isdir="-r"
-    hostname=$2
-    localfile=$3
-    remotefile=$4
+    hostname=$1
+    localfile=$2
+    remotefile=$3
 else
     usage
     exit 1
